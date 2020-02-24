@@ -45,7 +45,7 @@ namespace EventStore.Core.Services.Transport.Http.Controllers {
 			service.RegisterAction(
 				new ControllerAction("/admin/node/resign", HttpMethod.Post, Codec.NoCodecs, SupportedCodecs, AuthorizationLevel.Ops),
 				OnResignNode);
-			Register(service, "/streams/$scavenges?embed={embed}", HttpMethod.Get, GetStreamEventsBackward, Codec.NoCodecs,
+			Register(service, "/streams/$scavenges?embed={embed}", HttpMethod.Get, GetStreamEventsBackwardScavenges, Codec.NoCodecs,
 				SupportedCodecs, AuthorizationLevel.Ops);
 		}
 	
@@ -233,16 +233,29 @@ namespace EventStore.Core.Services.Transport.Http.Controllers {
 
 			return false;
 		}
-		private void GetStreamEventsBackward(HttpEntityManager manager, UriTemplateMatch match) {
+		private void GetStreamEventsBackwardScavenges(HttpEntityManager manager, UriTemplateMatch match) {
 			if (GetDescriptionDocument(manager, match))
 				return;
 			var stream = "$scavenges";
+			var evNum = match.BoundVariables["event"];
+			var cnt = match.BoundVariables["count"];
+
 			long eventNumber = -1;
 			int count = AtomSpecs.FeedPageSize;
 			var embed = GetEmbedLevel(manager, match);
 
 			if (stream.IsEmptyString()) {
 				SendBadRequest(manager, string.Format("Invalid stream name '{0}'", stream));
+				return;
+			}
+
+			if (evNum != null && evNum != "head" && (!long.TryParse(evNum, out eventNumber) || eventNumber < 0)) {
+				SendBadRequest(manager, string.Format("'{0}' is not valid event number", evNum));
+				return;
+			}
+
+			if (cnt.IsNotEmptyString() && (!int.TryParse(cnt, out count) || count <= 0)) {
+				SendBadRequest(manager, string.Format("'{0}' is not valid count. Should be positive integer", cnt));
 				return;
 			}
 
