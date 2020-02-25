@@ -16,18 +16,16 @@ namespace EventStore.Core.Tests.Services.ElectionsService {
 		private static ClusterVNodeSettings CreateVNode(int nodeNumber, bool isReadOnlyReplica) {
 			int tcpIntPort = StartingPort + nodeNumber * 2,
 				tcpExtPort = tcpIntPort + 1,
-				httpIntPort = tcpIntPort + 10,
-				httpExtPort = tcpIntPort + 11;
+				httpExtPort = tcpIntPort + 10;
 
 			var vnode = new ClusterVNodeSettings(Guid.NewGuid(), 0,
 				GetLoopbackForPort(tcpIntPort), null,
 				GetLoopbackForPort(tcpExtPort), null,
-				GetLoopbackForPort(httpIntPort), GetLoopbackForPort(httpExtPort),
+				GetLoopbackForPort(httpExtPort),
 				new Data.GossipAdvertiseInfo(GetLoopbackForPort(tcpIntPort), null,
 					GetLoopbackForPort(tcpExtPort), null,
-					GetLoopbackForPort(httpIntPort),
 					GetLoopbackForPort(httpExtPort),
-					null, null, 0, 0),
+					null, 0),
 				false, null, 1, false, "dns", new[] {GetLoopbackForPort(ManagerPort)},
 				TFConsts.MinFlushDelayMs, 3, 2, 2, TimeSpan.FromSeconds(2),
 				TimeSpan.FromSeconds(2), false, false, null, false, TimeSpan.FromHours(1),

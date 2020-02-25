@@ -626,7 +626,6 @@ namespace EventStore.Core {
 				vNodeSettings.GossipAdvertiseInfo.InternalSecureTcp,
 				vNodeSettings.GossipAdvertiseInfo.ExternalTcp,
 				vNodeSettings.GossipAdvertiseInfo.ExternalSecureTcp,
-				vNodeSettings.GossipAdvertiseInfo.InternalHttp,
 				vNodeSettings.GossipAdvertiseInfo.ExternalHttp,
 				vNodeSettings.ReadOnlyReplica);
 			if (!isSingleNode) {
@@ -800,8 +799,8 @@ namespace EventStore.Core {
 		}
 
 		public override string ToString() {
-			return string.Format("[{0:B}, {1}, {2}, {3}, {4}]", _nodeInfo.InstanceId,
-				_nodeInfo.InternalTcp, _nodeInfo.ExternalTcp, _nodeInfo.InternalHttp, _nodeInfo.ExternalHttp);
+			return
+				$"[{_nodeInfo.InstanceId:B}, {_nodeInfo.InternalTcp}, {_nodeInfo.ExternalTcp}, {_nodeInfo.ExternalHttp}]";
 		}
 	}
 }

@@ -28,9 +28,6 @@ namespace EventStore.ClientAPI.Messages {
 			public int ExternalTcpPort { get; set; }
 			public int ExternalSecureTcpPort { get; set; }
 
-			public string InternalHttpIp { get; set; }
-			public int InternalHttpPort { get; set; }
-
 			public string ExternalHttpIp { get; set; }
 			public int ExternalHttpPort { get; set; }
 
@@ -46,22 +43,14 @@ namespace EventStore.ClientAPI.Messages {
 
 			public override string ToString() {
 				if (State == VNodeState.Manager)
-					return string.Format("MAN {0:B} <{1}> [{2}, {3}:{4}, {5}:{6}] | {7:yyyy-MM-dd HH:mm:ss.fff}",
-						InstanceId, IsAlive ? "LIVE" : "DEAD", State,
-						InternalHttpIp, InternalHttpPort,
-						ExternalHttpIp, ExternalHttpPort,
-						TimeStamp);
-				return string.Format(
-					"VND {0:B} <{1}> [{2}, {3}:{4}, {5}, {6}:{7}, {8}, {9}:{10}, {11}:{12}] {13}/{14}/{15}/E{16}@{17}:{18:B} | {19:yyyy-MM-dd HH:mm:ss.fff}",
-					InstanceId, IsAlive ? "LIVE" : "DEAD", State,
-					InternalTcpIp, InternalTcpPort,
-					InternalSecureTcpPort > 0 ? string.Format("{0}:{1}", InternalTcpIp, InternalSecureTcpPort) : "n/a",
-					ExternalTcpIp, ExternalTcpPort,
-					ExternalSecureTcpPort > 0 ? string.Format("{0}:{1}", ExternalTcpIp, ExternalSecureTcpPort) : "n/a",
-					InternalHttpIp, InternalHttpPort, ExternalHttpIp, ExternalHttpPort,
-					LastCommitPosition, WriterCheckpoint, ChaserCheckpoint,
-					EpochNumber, EpochPosition, EpochId,
-					TimeStamp);
+					return
+						$"MAN {InstanceId:B} <{(IsAlive ? "LIVE" : "DEAD")}> [{State}, " +
+						$"{ExternalHttpIp}:{ExternalHttpPort}] | {TimeStamp:yyyy-MM-dd HH:mm:ss.fff}";
+				return
+					$"VND {InstanceId:B} <{(IsAlive ? "LIVE" : "DEAD")}> [{State}, {InternalTcpIp}:{InternalTcpPort}, " +
+					$"{(InternalSecureTcpPort > 0 ? $"{InternalTcpIp}:{InternalSecureTcpPort}" : "n/a")}, " +
+					$"{ExternalTcpIp}:{ExternalTcpPort}, {(ExternalSecureTcpPort > 0 ? $"{ExternalTcpIp}:{ExternalSecureTcpPort}" : "n/a")}, " +
+					$"{ExternalHttpIp}:{ExternalHttpPort}] {LastCommitPosition}/{WriterCheckpoint}/{ChaserCheckpoint}/E{EpochNumber}@{EpochPosition}:{EpochId:B} | {TimeStamp:yyyy-MM-dd HH:mm:ss.fff}";
 			}
 		}
 

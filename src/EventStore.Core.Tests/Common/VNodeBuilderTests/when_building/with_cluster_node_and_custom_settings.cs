@@ -206,7 +206,6 @@ namespace EventStore.Core.Tests.Common.VNodeBuilderTests.when_building {
 		[Test]
 		public void should_set_the_loopback_address_as_advertise_info_for_internal() {
 			Assert.AreEqual(new IPEndPoint(IPAddress.Loopback, 1112), _settings.GossipAdvertiseInfo.InternalTcp);
-			Assert.AreEqual(new IPEndPoint(IPAddress.Loopback, 2112), _settings.GossipAdvertiseInfo.InternalHttp);
 		}
 	}
 
@@ -229,7 +228,6 @@ namespace EventStore.Core.Tests.Common.VNodeBuilderTests.when_building {
 		[Test]
 		public void should_set_the_loopback_address_as_advertise_info_for_internal() {
 			Assert.AreEqual(new IPEndPoint(IPAddress.Loopback, 1112), _settings.GossipAdvertiseInfo.InternalTcp);
-			Assert.AreEqual(new IPEndPoint(IPAddress.Loopback, 2112), _settings.GossipAdvertiseInfo.InternalHttp);
 		}
 	}
 
@@ -251,7 +249,6 @@ namespace EventStore.Core.Tests.Common.VNodeBuilderTests.when_building {
 		[Test]
 		public void should_use_loopback_ip_as_advertise_info_for_internal() {
 			Assert.AreEqual(new IPEndPoint(IPAddress.Loopback, 1112), _settings.GossipAdvertiseInfo.InternalTcp);
-			Assert.AreEqual(new IPEndPoint(IPAddress.Loopback, 2112), _settings.GossipAdvertiseInfo.InternalHttp);
 		}
 	}
 
@@ -276,8 +273,6 @@ namespace EventStore.Core.Tests.Common.VNodeBuilderTests.when_building {
 		public void should_use_the_non_default_loopback_ip_as_advertise_info_for_internal() {
 			Assert.AreEqual(new IPEndPoint(IPFinder.GetNonLoopbackAddress(), 1112),
 				_settings.GossipAdvertiseInfo.InternalTcp);
-			Assert.AreEqual(new IPEndPoint(IPFinder.GetNonLoopbackAddress(), 2112),
-				_settings.GossipAdvertiseInfo.InternalHttp);
 		}
 	}
 }

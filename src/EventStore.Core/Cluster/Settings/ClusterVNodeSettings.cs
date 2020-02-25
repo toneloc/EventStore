@@ -94,7 +94,6 @@ namespace EventStore.Core.Cluster.Settings {
 			IPEndPoint internalSecureTcpEndPoint,
 			IPEndPoint externalTcpEndPoint,
 			IPEndPoint externalSecureTcpEndPoint,
-			IPEndPoint internalHttpEndPoint,
 			IPEndPoint externalHttpEndPoint,
 			GossipAdvertiseInfo gossipAdvertiseInfo,
 			bool enableTrustedAuth,
@@ -166,7 +165,6 @@ namespace EventStore.Core.Cluster.Settings {
 			Ensure.NotEmptyGuid(instanceId, "instanceId");
 			Ensure.NotNull(internalTcpEndPoint, "internalTcpEndPoint");
 			Ensure.NotNull(externalTcpEndPoint, "externalTcpEndPoint");
-			Ensure.NotNull(internalHttpEndPoint, "internalHttpEndPoint");
 			Ensure.NotNull(externalHttpEndPoint, "externalHttpEndPoint");
 			if (internalSecureTcpEndPoint != null || externalSecureTcpEndPoint != null)
 				Ensure.NotNull(certificate, "certificate");
@@ -192,8 +190,7 @@ namespace EventStore.Core.Cluster.Settings {
 			NodeInfo = new VNodeInfo(instanceId, debugIndex,
 				internalTcpEndPoint, internalSecureTcpEndPoint,
 				externalTcpEndPoint, externalSecureTcpEndPoint,
-				internalHttpEndPoint, externalHttpEndPoint,
-				readOnlyReplica);
+				externalHttpEndPoint, readOnlyReplica);
 			GossipAdvertiseInfo = gossipAdvertiseInfo;
 			EnableTrustedAuth = enableTrustedAuth;
 			Certificate = certificate;
@@ -276,7 +273,7 @@ namespace EventStore.Core.Cluster.Settings {
 		public override string ToString() =>
 			$"InstanceId: {NodeInfo.InstanceId}\n" + $"InternalTcp: {NodeInfo.InternalTcp}\n" +
 			$"InternalSecureTcp: {NodeInfo.InternalSecureTcp}\n" + $"ExternalTcp: {NodeInfo.ExternalTcp}\n" +
-			$"ExternalSecureTcp: {NodeInfo.ExternalSecureTcp}\n" + $"InternalHttp: {NodeInfo.InternalHttp}\n" +
+			$"ExternalSecureTcp: {NodeInfo.ExternalSecureTcp}\n" + 
 			$"ExternalHttp: {NodeInfo.ExternalHttp}\n" +
 			$"EnableTrustedAuth: {EnableTrustedAuth}\n" +
 			$"Certificate: {(Certificate == null ? "n/a" : Certificate.ToString(true))}\n" +

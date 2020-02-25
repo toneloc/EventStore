@@ -4,8 +4,8 @@ namespace EventStore.Core.Messages {
 	public static class ElectionMessageDto {
 		public class ViewChangeDto {
 			public Guid ServerId { get; set; }
-			public string ServerInternalHttpAddress { get; set; }
-			public int ServerInternalHttpPort { get; set; }
+			public string ServerExternalHttpAddress { get; set; }
+			public int ServerExternalHttpPort { get; set; }
 
 			public int AttemptedView { get; set; }
 
@@ -14,8 +14,8 @@ namespace EventStore.Core.Messages {
 
 			public ViewChangeDto(ElectionMessage.ViewChange message) {
 				ServerId = message.ServerId;
-				ServerInternalHttpAddress = message.ServerInternalHttp.Address.ToString();
-				ServerInternalHttpPort = message.ServerInternalHttp.Port;
+				ServerExternalHttpAddress = message.ServerExternalHttp.Address.ToString();
+				ServerExternalHttpPort = message.ServerExternalHttp.Port;
 
 				AttemptedView = message.AttemptedView;
 			}
@@ -23,8 +23,8 @@ namespace EventStore.Core.Messages {
 
 		public class ViewChangeProofDto {
 			public Guid ServerId { get; set; }
-			public string ServerInternalHttpAddress { get; set; }
-			public int ServerInternalHttpPort { get; set; }
+			public string ServerExternalHttpAddress { get; set; }
+			public int ServerExternalHttpPort { get; set; }
 
 			public int InstalledView { get; set; }
 
@@ -33,8 +33,8 @@ namespace EventStore.Core.Messages {
 
 			public ViewChangeProofDto(ElectionMessage.ViewChangeProof message) {
 				ServerId = message.ServerId;
-				ServerInternalHttpAddress = message.ServerInternalHttp.Address.ToString();
-				ServerInternalHttpPort = message.ServerInternalHttp.Port;
+				ServerExternalHttpAddress = message.ServerExternalHttp.Address.ToString();
+				ServerExternalHttpPort = message.ServerExternalHttp.Port;
 
 				InstalledView = message.InstalledView;
 			}
@@ -42,8 +42,8 @@ namespace EventStore.Core.Messages {
 
 		public class PrepareDto {
 			public Guid ServerId { get; set; }
-			public string ServerInternalHttpAddress { get; set; }
-			public int ServerInternalHttpPort { get; set; }
+			public string ServerExternalHttpAddress { get; set; }
+			public int ServerExternalHttpPort { get; set; }
 
 			public int View { get; set; }
 
@@ -52,8 +52,8 @@ namespace EventStore.Core.Messages {
 
 			public PrepareDto(ElectionMessage.Prepare message) {
 				ServerId = message.ServerId;
-				ServerInternalHttpAddress = message.ServerInternalHttp.Address.ToString();
-				ServerInternalHttpPort = message.ServerInternalHttp.Port;
+				ServerExternalHttpAddress = message.ServerExternalHttp.Address.ToString();
+				ServerExternalHttpPort = message.ServerExternalHttp.Port;
 
 				View = message.View;
 			}
@@ -61,8 +61,8 @@ namespace EventStore.Core.Messages {
 
 		public class PrepareOkDto {
 			public Guid ServerId { get; set; }
-			public string ServerInternalHttpAddress { get; set; }
-			public int ServerInternalHttpPort { get; set; }
+			public string ServerExternalHttpAddress { get; set; }
+			public int ServerExternalHttpPort { get; set; }
 
 			public int View { get; set; }
 
@@ -80,8 +80,8 @@ namespace EventStore.Core.Messages {
 
 			public PrepareOkDto(ElectionMessage.PrepareOk message) {
 				ServerId = message.ServerId;
-				ServerInternalHttpAddress = message.ServerInternalHttp.Address.ToString();
-				ServerInternalHttpPort = message.ServerInternalHttp.Port;
+				ServerExternalHttpAddress = message.ServerExternalHttp.Address.ToString();
+				ServerExternalHttpPort = message.ServerExternalHttp.Port;
 
 				View = message.View;
 
@@ -101,10 +101,10 @@ namespace EventStore.Core.Messages {
 			public Guid ServerId { get; set; }
 			public Guid LeaderId { get; set; }
 
-			public string ServerInternalHttpAddress { get; set; }
-			public int ServerInternalHttpPort { get; set; }
-			public string LeaderInternalHttpAddress { get; set; }
-			public int LeaderInternalHttpPort { get; set; }
+			public string ServerExternalHttpAddress { get; set; }
+			public int ServerExternalHttpPort { get; set; }
+			public string LeaderExternalHttpAddress { get; set; }
+			public int LeaderExternalHttpPort { get; set; }
 
 			public int View { get; set; }
 
@@ -123,10 +123,10 @@ namespace EventStore.Core.Messages {
 				ServerId = message.ServerId;
 				LeaderId = message.LeaderId;
 
-				ServerInternalHttpAddress = message.ServerInternalHttp.Address.ToString();
-				ServerInternalHttpPort = message.ServerInternalHttp.Port;
-				LeaderInternalHttpAddress = message.LeaderInternalHttp.Address.ToString();
-				LeaderInternalHttpPort = message.LeaderInternalHttp.Port;
+				ServerExternalHttpAddress = message.ServerExternalHttp.Address.ToString();
+				ServerExternalHttpPort = message.ServerExternalHttp.Port;
+				LeaderExternalHttpAddress = message.LeaderExternalHttp.Address.ToString();
+				LeaderExternalHttpPort = message.LeaderExternalHttp.Port;
 
 				View = message.View;
 				EpochNumber = message.EpochNumber;
@@ -144,10 +144,10 @@ namespace EventStore.Core.Messages {
 			public Guid ServerId { get; set; }
 			public Guid LeaderId { get; set; }
 
-			public string ServerInternalHttpAddress { get; set; }
-			public int ServerInternalHttpPort { get; set; }
-			public string LeaderInternalHttpAddress { get; set; }
-			public int LeaderInternalHttpPort { get; set; }
+			public string ServerExternalHttpAddress { get; set; }
+			public int ServerExternalHttpPort { get; set; }
+			public string LeaderExternalHttpAddress { get; set; }
+			public int LeaderExternalHttpPort { get; set; }
 
 			public int View { get; set; }
 
@@ -158,10 +158,10 @@ namespace EventStore.Core.Messages {
 				ServerId = message.ServerId;
 				LeaderId = message.LeaderId;
 
-				ServerInternalHttpAddress = message.ServerInternalHttp.Address.ToString();
-				ServerInternalHttpPort = message.ServerInternalHttp.Port;
-				LeaderInternalHttpAddress = message.LeaderInternalHttp.Address.ToString();
-				LeaderInternalHttpPort = message.LeaderInternalHttp.Port;
+				ServerExternalHttpAddress = message.ServerExternalHttp.Address.ToString();
+				ServerExternalHttpPort = message.ServerExternalHttp.Port;
+				LeaderExternalHttpAddress = message.LeaderExternalHttp.Address.ToString();
+				LeaderExternalHttpPort = message.LeaderExternalHttp.Port;
 
 				View = message.View;
 			}
@@ -169,35 +169,35 @@ namespace EventStore.Core.Messages {
 		
 		public class LeaderIsResigningDto {
 			public Guid LeaderId { get; set; }
-			public string LeaderInternalHttpAddress { get; set; }
-			public int LeaderInternalHttpPort { get; set; }
+			public string LeaderExternalHttpAddress { get; set; }
+			public int LeaderExternalHttpPort { get; set; }
 			public LeaderIsResigningDto() {
 			}
 
 			public LeaderIsResigningDto(ElectionMessage.LeaderIsResigning message) {
 				LeaderId = message.LeaderId;
-				LeaderInternalHttpAddress = message.LeaderInternalHttp.Address.ToString();
-				LeaderInternalHttpPort = message.LeaderInternalHttp.Port;
+				LeaderExternalHttpAddress = message.LeaderExternalHttp.Address.ToString();
+				LeaderExternalHttpPort = message.LeaderExternalHttp.Port;
 			}
 		}
 		
 		public class LeaderIsResigningOkDto {
 			public Guid LeaderId { get; set; }
-			public string LeaderInternalHttpAddress { get; set; }
-			public int LeaderInternalHttpPort { get; set; }
+			public string LeaderExternalHttpAddress { get; set; }
+			public int LeaderExternalHttpPort { get; set; }
 			public Guid ServerId { get; set; }
-			public string ServerInternalHttpAddress { get; set; }
-			public int ServerInternalHttpPort { get; set; }
+			public string ServerExternalHttpAddress { get; set; }
+			public int ServerExternalHttpPort { get; set; }
 			public LeaderIsResigningOkDto() {
 			}
 
 			public LeaderIsResigningOkDto(ElectionMessage.LeaderIsResigningOk message) {
 				ServerId = message.ServerId;
-				ServerInternalHttpAddress = message.ServerInternalHttp.Address.ToString();
-				ServerInternalHttpPort = message.ServerInternalHttp.Port;
+				ServerExternalHttpAddress = message.ServerExternalHttp.Address.ToString();
+				ServerExternalHttpPort = message.ServerExternalHttp.Port;
 				LeaderId = message.LeaderId;
-				LeaderInternalHttpAddress = message.LeaderInternalHttp.Address.ToString();
-				LeaderInternalHttpPort = message.LeaderInternalHttp.Port;
+				LeaderExternalHttpAddress = message.LeaderExternalHttp.Address.ToString();
+				LeaderExternalHttpPort = message.LeaderExternalHttp.Port;
 			}
 		}
 	}

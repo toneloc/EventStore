@@ -92,7 +92,6 @@ namespace EventStore.Core.Tests.Helpers {
 				.WithInternalSecureTcpOn(IntSecTcpEndPoint)
 				.WithExternalTcpOn(TcpEndPoint)
 				.WithExternalSecureTcpOn(TcpSecEndPoint)
-				.WithInternalHttpOn(IntHttpEndPoint)
 				.WithExternalHttpOn(ExtHttpEndPoint)
 				.WithTfChunkSize(chunkSize ?? ChunkSize)
 				.WithTfChunksCacheSize(cachedChunkSize ?? CachedChunkSize)

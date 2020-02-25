@@ -271,9 +271,6 @@ namespace EventStore.Core.Util {
 		public const string ExternalIpDescr = "External IP Address.";
 		public static readonly IPAddress ExternalIpDefault = IPAddress.Loopback;
 
-		public const string InternalHttpPortDescr = "Internal HTTP Port.";
-		public const int InternalHttpPortDefault = 2112;
-
 		public const string ExternalHttpPortDescr = "External HTTP Port.";
 		public const int ExternalHttpPortDefault = 2113;
 
@@ -309,9 +306,6 @@ namespace EventStore.Core.Util {
 
 		public const string InternalSecureTcpPortAdvertiseAsDescr = "Advertise Secure Internal Tcp Port As.";
 		public static readonly int InternalSecureTcpPortAdvertiseAsDefault = 0;
-
-		public const string InternalHttpPortAdvertiseAsDescr = "Advertise Internal Http Port As.";
-		public static readonly int InternalHttpPortAdvertiseAsDefault = 0;
 
 		public const string ClusterSizeDescr = "The number of nodes in the cluster.";
 		public const int ClusterSizeDefault = 1;

@@ -55,7 +55,6 @@ namespace EventStore.Core.Services.Gossip {
 				NodeInfo.InternalSecureTcp,
 				NodeInfo.ExternalTcp,
 				NodeInfo.ExternalSecureTcp,
-				NodeInfo.InternalHttp,
 				NodeInfo.ExternalHttp,
 				_getLastCommitPosition(),
 				_writerCheckpoint.Read(),

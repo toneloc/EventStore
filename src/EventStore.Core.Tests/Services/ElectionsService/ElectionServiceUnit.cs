@@ -22,7 +22,7 @@ namespace EventStore.Core.Tests.Services.ElectionsService {
 		public ClusterInfo ClusterInfo { get; private set; }
 
 		public IPEndPoint OwnEndPoint {
-			get { return InitialClusterSettings.Self.NodeInfo.InternalHttp; }
+			get { return InitialClusterSettings.Self.NodeInfo.ExternalHttp; }
 		}
 
 		protected Core.Services.ElectionsService ElectionsService;
@@ -58,8 +58,7 @@ namespace EventStore.Core.Tests.Services.ElectionsService {
 		private ClusterInfo BuildClusterInfo(ClusterSettings clusterSettings) {
 			var members =
 				(new[] {
-					MemberInfo.ForManager(Guid.Empty, InitialDate, true, clusterSettings.ClusterManager,
-						clusterSettings.ClusterManager)
+					MemberInfo.ForManager(Guid.Empty, InitialDate, true, clusterSettings.ClusterManager)
 				})
 				.Union(new[] {
 					MemberInfo.ForVNode(clusterSettings.Self.NodeInfo.InstanceId,
@@ -70,7 +69,6 @@ namespace EventStore.Core.Tests.Services.ElectionsService {
 						clusterSettings.Self.NodeInfo.InternalSecureTcp,
 						clusterSettings.Self.NodeInfo.ExternalTcp,
 						clusterSettings.Self.NodeInfo.ExternalSecureTcp,
-						clusterSettings.Self.NodeInfo.InternalHttp,
 						clusterSettings.Self.NodeInfo.ExternalHttp,
 						LastCommitPosition, WriterCheckpoint, ChaserCheckpoint,
 						-1,
@@ -86,7 +84,6 @@ namespace EventStore.Core.Tests.Services.ElectionsService {
 						x.NodeInfo.InternalSecureTcp,
 						x.NodeInfo.ExternalTcp,
 						x.NodeInfo.ExternalSecureTcp,
-						x.NodeInfo.InternalHttp,
 						x.NodeInfo.ExternalHttp,
 						LastCommitPosition, WriterCheckpoint, ChaserCheckpoint,
 						-1,
@@ -94,7 +91,7 @@ namespace EventStore.Core.Tests.Services.ElectionsService {
 						Guid.Empty, 0, false)));
 
 			var ordered = members.OrderBy(x =>
-				string.Format("{0}:{1}", x.InternalHttpEndPoint.ToString(), x.InternalHttpEndPoint.Port));
+				$"{x.ExternalHttpEndPoint}:{x.ExternalHttpEndPoint.Port}");
 
 			return new ClusterInfo(ordered.ToArray());
 		}
@@ -168,12 +165,11 @@ namespace EventStore.Core.Tests.Services.ElectionsService {
 			predicate = predicate ?? (x => true);
 			return ClusterInfo.Members.Where(predicate).Select(x =>
 				x.State == VNodeState.Manager
-					? MemberInfo.ForManager(x.InstanceId, x.TimeStamp, x.IsAlive, x.InternalHttpEndPoint,
-						x.ExternalHttpEndPoint)
+					? MemberInfo.ForManager(x.InstanceId, x.TimeStamp, x.IsAlive, x.ExternalHttpEndPoint)
 					: MemberInfo.ForVNode(x.InstanceId, x.TimeStamp, x.State, x.IsAlive,
 						x.InternalTcpEndPoint, x.InternalSecureTcpEndPoint,
-						x.ExternalTcpEndPoint, x.ExternalSecureTcpEndPoint,
-						x.InternalHttpEndPoint, x.ExternalHttpEndPoint,
+						x.ExternalTcpEndPoint, x.ExternalSecureTcpEndPoint, 
+						x.ExternalHttpEndPoint,
 						x.LastCommitPosition, x.WriterCheckpoint, x.ChaserCheckpoint,
 						x.EpochPosition, x.EpochNumber, x.EpochId, x.NodePriority, x.IsReadOnlyReplica));
 		}

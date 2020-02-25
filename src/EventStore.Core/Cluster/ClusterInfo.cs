@@ -17,13 +17,13 @@ namespace EventStore.Core.Cluster {
 		}
 
 		public ClusterInfo(IEnumerable<MemberInfo> members) {
-			Members = members.Safe().OrderByDescending<MemberInfo, IPEndPoint>(x => x.InternalHttpEndPoint, Comparer)
+			Members = members.Safe().OrderByDescending<MemberInfo, IPEndPoint>(x => x.ExternalHttpEndPoint, Comparer)
 				.ToArray();
 		}
 
 		public ClusterInfo(ClusterInfoDto dto) {
 			Members = dto.Members.Safe().Select(x => new MemberInfo(x))
-				.OrderByDescending<MemberInfo, IPEndPoint>(x => x.InternalHttpEndPoint, Comparer).ToArray();
+				.OrderByDescending<MemberInfo, IPEndPoint>(x => x.ExternalHttpEndPoint, Comparer).ToArray();
 		}
 
 		public override string ToString() {
@@ -52,7 +52,6 @@ namespace EventStore.Core.Cluster {
 					x.IsAlive,
 					new IPEndPoint(IPAddress.Parse(x.InternalTcp.Address), (int)x.InternalTcp.Port),
 					new IPEndPoint(IPAddress.Parse(x.ExternalTcp.Address), (int)x.ExternalTcp.Port),
-					new IPEndPoint(IPAddress.Parse(x.InternalHttp.Address), (int)x.InternalHttp.Port),
 					new IPEndPoint(IPAddress.Parse(x.ExternalHttp.Address), (int)x.ExternalHttp.Port),
 					x.LastCommitPosition, x.WriterCheckpoint, x.ChaserCheckpoint,
 					x.EpochPosition, x.EpochNumber, Uuid.FromDto(x.EpochId).ToGuid(), x.NodePriority,
@@ -70,9 +69,6 @@ namespace EventStore.Core.Cluster {
 				ExternalHttp = new EventStore.Cluster.EndPoint(
 					x.ExternalHttpEndPoint.Address.ToString(),
 					(uint)x.ExternalHttpEndPoint.Port),
-				InternalHttp = new EventStore.Cluster.EndPoint(
-					x.InternalHttpEndPoint.Address.ToString(),
-					(uint)x.InternalHttpEndPoint.Port),
 				InternalTcp = new EventStore.Cluster.EndPoint(
 					x.InternalTcpEndPoint.Address.ToString(),
 					(uint)x.InternalTcpEndPoint.Port),

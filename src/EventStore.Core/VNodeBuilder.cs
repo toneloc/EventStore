@@ -44,7 +44,6 @@ namespace EventStore.Core {
 		protected IPEndPoint _internalSecureTcp;
 		protected IPEndPoint _externalTcp;
 		protected IPEndPoint _externalSecureTcp;
-		protected IPEndPoint _internalHttp;
 		protected IPEndPoint _externalHttp;
 
 		protected bool _enableTrustedAuth;
@@ -122,7 +121,6 @@ namespace EventStore.Core {
 		protected TFChunkDbConfig _dbConfig;
 		private IPAddress _advertiseInternalIPAs;
 		private IPAddress _advertiseExternalIPAs;
-		private int _advertiseInternalHttpPortAs;
 		private int _advertiseExternalHttpPortAs;
 		private int _advertiseInternalSecureTcpPortAs;
 		private int _advertiseExternalSecureTcpPortAs;
@@ -162,7 +160,6 @@ namespace EventStore.Core {
 			_internalTcp = new IPEndPoint(Opts.InternalIpDefault, Opts.InternalTcpPortDefault);
 			_internalSecureTcp = null;
 			_externalHttp = new IPEndPoint(Opts.ExternalIpDefault, Opts.ExternalHttpPortDefault);
-			_internalHttp = new IPEndPoint(Opts.InternalIpDefault, Opts.InternalHttpPortDefault);
 
 			_enableTrustedAuth = Opts.EnableTrustedAuthDefault;
 			_readerThreadsCount = Opts.ReaderThreadsCountDefault;
@@ -346,7 +343,6 @@ namespace EventStore.Core {
 		/// </summary>
 		/// <returns>A <see cref="VNodeBuilder"/> with the options set</returns>
 		public VNodeBuilder OnDefaultEndpoints() {
-			_internalHttp = new IPEndPoint(Opts.InternalIpDefault, 2112);
 			_internalTcp = new IPEndPoint(Opts.InternalIpDefault, 1112);
 			_externalHttp = new IPEndPoint(Opts.ExternalIpDefault, 2113);
 			_externalTcp = new IPEndPoint(Opts.InternalIpDefault, 1113);
@@ -368,15 +364,6 @@ namespace EventStore.Core {
 		/// <returns>A <see cref="VNodeBuilder"/> with the options set</returns>
 		public VNodeBuilder AdvertiseExternalIPAs(IPAddress extIpAdvertiseAs) {
 			_advertiseExternalIPAs = extIpAdvertiseAs;
-			return this;
-		}
-
-		/// <summary>
-		/// Sets up the Internal Http Port that would be advertised
-		/// </summary>
-		/// <returns>A <see cref="VNodeBuilder"/> with the options set</returns>
-		public VNodeBuilder AdvertiseInternalHttpPortAs(int intHttpPortAdvertiseAs) {
-			_advertiseInternalHttpPortAs = intHttpPortAdvertiseAs;
 			return this;
 		}
 
@@ -454,16 +441,6 @@ namespace EventStore.Core {
 		/// <returns>A <see cref="VNodeBuilder"/> with the options set</returns>
 		public VNodeBuilder WithClusterGossipPort(int port) {
 			_clusterGossipPort = port;
-			return this;
-		}
-
-		/// <summary>
-		/// Sets the internal http endpoint to the specified value
-		/// </summary>
-		/// <param name="endpoint">The internal endpoint to use</param>
-		/// <returns>A <see cref="VNodeBuilder"/> with the options set</returns>
-		public VNodeBuilder WithInternalHttpOn(IPEndPoint endpoint) {
-			_internalHttp = endpoint;
 			return this;
 		}
 
@@ -1272,17 +1249,13 @@ namespace EventStore.Core {
 					_externalSecureTcp == null ? 0 : _externalSecureTcp.Port;
 				var extSecureTcpEndPoint = new IPEndPoint(extIpAddressToAdvertise, extSecureTcpPort);
 
-				var intHttpPort = _advertiseInternalHttpPortAs > 0 ? _advertiseInternalHttpPortAs : _internalHttp.Port;
 				var extHttpPort = _advertiseExternalHttpPortAs > 0 ? _advertiseExternalHttpPortAs : _externalHttp.Port;
 
-				var intHttpEndPoint = new IPEndPoint(intIpAddressToAdvertise, intHttpPort);
 				var extHttpEndPoint = new IPEndPoint(extIpAddressToAdvertise, extHttpPort);
 
 				_gossipAdvertiseInfo = new GossipAdvertiseInfo(intTcpEndPoint, intSecureTcpEndPoint,
-					extTcpEndPoint, extSecureTcpEndPoint,
-					intHttpEndPoint, extHttpEndPoint,
-					_advertiseInternalIPAs, _advertiseExternalIPAs,
-					_advertiseInternalHttpPortAs, _advertiseExternalHttpPortAs);
+					extTcpEndPoint, extSecureTcpEndPoint, extHttpEndPoint,
+					_advertiseExternalIPAs, _advertiseExternalHttpPortAs);
 			}
 
 			return _gossipAdvertiseInfo;
@@ -1332,7 +1305,6 @@ namespace EventStore.Core {
 				_internalSecureTcp,
 				_externalTcp,
 				_externalSecureTcp,
-				_internalHttp,
 				_externalHttp,
 				_gossipAdvertiseInfo,
 				_enableTrustedAuth,

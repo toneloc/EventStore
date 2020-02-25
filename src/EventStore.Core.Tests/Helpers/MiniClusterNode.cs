@@ -44,7 +44,6 @@ namespace EventStore.Core.Tests.Helpers {
 
 		public IPEndPoint InternalTcpEndPoint { get; private set; }
 		public IPEndPoint InternalTcpSecEndPoint { get; private set; }
-		public IPEndPoint InternalHttpEndPoint { get; private set; }
 		public IPEndPoint ExternalTcpEndPoint { get; private set; }
 		public IPEndPoint ExternalTcpSecEndPoint { get; private set; }
 		public IPEndPoint ExternalHttpEndPoint { get; private set; }
@@ -71,7 +70,7 @@ namespace EventStore.Core.Tests.Helpers {
 		}
 
 		public MiniClusterNode(
-			string pathname, int debugIndex, IPEndPoint internalTcp, IPEndPoint internalTcpSec, IPEndPoint internalHttp,
+			string pathname, int debugIndex, IPEndPoint internalTcp, IPEndPoint internalTcpSec,
 			IPEndPoint externalTcp, IPEndPoint externalTcpSec, IPEndPoint externalHttp, IPEndPoint[] gossipSeeds,
 			ISubsystem[] subsystems = null, int? chunkSize = null, int? cachedChunkSize = null,
 			bool enableTrustedAuth = false, bool skipInitializeStandardUsersCheck = true, int memTableSize = 1000,
@@ -100,7 +99,6 @@ namespace EventStore.Core.Tests.Helpers {
 
 			InternalTcpEndPoint = internalTcp;
 			InternalTcpSecEndPoint = internalTcpSec;
-			InternalHttpEndPoint = internalHttp;
 
 			ExternalTcpEndPoint = externalTcp;
 			ExternalTcpSecEndPoint = externalTcpSec;
@@ -108,11 +106,10 @@ namespace EventStore.Core.Tests.Helpers {
 
 			var singleVNodeSettings = new ClusterVNodeSettings(
 				Guid.NewGuid(), debugIndex, InternalTcpEndPoint, InternalTcpSecEndPoint, ExternalTcpEndPoint,
-				ExternalTcpSecEndPoint, InternalHttpEndPoint, ExternalHttpEndPoint,
+				ExternalTcpSecEndPoint, ExternalHttpEndPoint,
 				new Data.GossipAdvertiseInfo(InternalTcpEndPoint, InternalTcpSecEndPoint,
-					ExternalTcpEndPoint, ExternalTcpSecEndPoint,
-					InternalHttpEndPoint, ExternalHttpEndPoint,
-					null, null, 0, 0), enableTrustedAuth,
+					ExternalTcpEndPoint, ExternalTcpSecEndPoint, ExternalHttpEndPoint,
+					null, 0), enableTrustedAuth,
 				ssl_connections.GetCertificate(), 1, false,
 				"", gossipSeeds, TFConsts.MinFlushDelayMs, 3, 2, 2, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10),
 				false, false, "", false, TimeSpan.FromHours(1), StatsStorage.None, 0,
@@ -157,13 +154,6 @@ namespace EventStore.Core.Tests.Helpers {
 
 			_host = new WebHostBuilder()
 				.UseKestrel(o => {
-					o.Listen(InternalHttpEndPoint, options => {
-						if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-							options.Protocols = HttpProtocols.Http2;
-						} else { 
-							options.UseHttps();
-						}
-					});
 					o.Listen(ExternalHttpEndPoint);
 				})
 				.UseStartup(Node.Startup)

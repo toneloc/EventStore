@@ -32,8 +32,7 @@ namespace EventStore.Core.Tests.Common.VNodeBuilderTests.when_building {
 	public class with_default_endpoints_option : SingleNodeScenario {
 		public override void Given() {
 			var noEndpoint = new IPEndPoint(IPAddress.None, 0);
-			_builder.WithInternalHttpOn(noEndpoint)
-				.WithExternalHttpOn(noEndpoint)
+			_builder.WithExternalHttpOn(noEndpoint)
 				.WithInternalTcpOn(noEndpoint)
 				.WithExternalTcpOn(noEndpoint);
 
@@ -48,11 +47,6 @@ namespace EventStore.Core.Tests.Common.VNodeBuilderTests.when_building {
 		[Test]
 		public void should_set_external_tcp() {
 			Assert.AreEqual(new IPEndPoint(IPAddress.Loopback, 1113), _settings.NodeInfo.ExternalTcp);
-		}
-
-		[Test]
-		public void should_set_internal_http() {
-			Assert.AreEqual(new IPEndPoint(IPAddress.Loopback, 2112), _settings.NodeInfo.InternalHttp);
 		}
 
 		[Test]
@@ -400,26 +394,18 @@ namespace EventStore.Core.Tests.Common.VNodeBuilderTests.when_building {
 
 	[TestFixture]
 	public class with_custom_ip_endpoints : SingleNodeScenario {
-		private IPEndPoint _internalHttp;
 		private IPEndPoint _externalHttp;
 		private IPEndPoint _internalTcp;
 		private IPEndPoint _externalTcp;
 
 		public override void Given() {
 			var baseIpAddress = IPAddress.Parse("127.0.1.15");
-			_internalHttp = new IPEndPoint(baseIpAddress, 1112);
-			_externalHttp = new IPEndPoint(baseIpAddress, 1113);
-			_internalTcp = new IPEndPoint(baseIpAddress, 1114);
-			_externalTcp = new IPEndPoint(baseIpAddress, 1115);
-			_builder.WithInternalHttpOn(_internalHttp)
-				.WithExternalHttpOn(_externalHttp)
+			_externalHttp = new IPEndPoint(baseIpAddress, 1112);
+			_internalTcp = new IPEndPoint(baseIpAddress, 1113);
+			_externalTcp = new IPEndPoint(baseIpAddress, 1114);
+			_builder.WithExternalHttpOn(_externalHttp)
 				.WithExternalTcpOn(_externalTcp)
 				.WithInternalTcpOn(_internalTcp);
-		}
-
-		[Test]
-		public void should_set_internal_http_endpoint() {
-			Assert.AreEqual(_internalHttp, _settings.NodeInfo.InternalHttp);
 		}
 
 		[Test]
@@ -439,45 +425,17 @@ namespace EventStore.Core.Tests.Common.VNodeBuilderTests.when_building {
 	}
 
 	[TestFixture]
-	public class with_custom_http_prefixes : SingleNodeScenario {
-		private string _intPrefix;
-		private string _intLoopbackPrefix;
-		private string _extPrefix;
-		private string _extLoopbackPrefix;
-
-		public override void Given() {
-			var baseIpAddress = IPAddress.Parse("127.0.1.15");
-			int intPort = 1112;
-			int extPort = 1113;
-
-			var internalHttp = new IPEndPoint(baseIpAddress, intPort);
-			var externalHttp = new IPEndPoint(baseIpAddress, extPort);
-
-			_intPrefix = string.Format("http://{0}/", internalHttp);
-			_intLoopbackPrefix = string.Format("http://{0}/", new IPEndPoint(IPAddress.Loopback, intPort));
-			_extPrefix = string.Format("http://{0}/", externalHttp);
-			_extLoopbackPrefix = string.Format("http://{0}/", new IPEndPoint(IPAddress.Loopback, extPort));
-
-			_builder.WithInternalHttpOn(internalHttp)
-				.WithExternalHttpOn(externalHttp);
-		}
-	}
-
-	[TestFixture]
 	public class with_add_interface_prefixes : SingleNodeScenario {
-		private IPEndPoint _internalHttp;
 		private IPEndPoint _externalHttp;
 		private IPEndPoint _internalTcp;
 		private IPEndPoint _externalTcp;
 
 		public override void Given() {
 			var baseIpAddress = IPAddress.Loopback;
-			_internalHttp = new IPEndPoint(baseIpAddress, 1112);
-			_externalHttp = new IPEndPoint(baseIpAddress, 1113);
-			_internalTcp = new IPEndPoint(baseIpAddress, 1114);
-			_externalTcp = new IPEndPoint(baseIpAddress, 1115);
-			_builder.WithInternalHttpOn(_internalHttp)
-				.WithExternalHttpOn(_externalHttp)
+			_externalHttp = new IPEndPoint(baseIpAddress, 1112);
+			_internalTcp = new IPEndPoint(baseIpAddress, 1113);
+			_externalTcp = new IPEndPoint(baseIpAddress, 1114);
+			_builder.WithExternalHttpOn(_externalHttp)
 				.WithExternalTcpOn(_externalTcp)
 				.WithInternalTcpOn(_internalTcp);
 		}
@@ -561,12 +519,10 @@ namespace EventStore.Core.Tests.Common.VNodeBuilderTests.when_building {
 			var intSecTcpEndpoint = new IPEndPoint(internalIPToAdvertise, 1112);
 			var extTcpEndpoint = new IPEndPoint(externalIPToAdvertise, 1113);
 			var extSecTcpEndpoint = new IPEndPoint(externalIPToAdvertise, 1114);
-			var intHttpEndpoint = new IPEndPoint(internalIPToAdvertise, 1115);
-			var extHttpEndpoint = new IPEndPoint(externalIPToAdvertise, 1116);
+			var extHttpEndpoint = new IPEndPoint(externalIPToAdvertise, 1115);
 
 			_advertiseInfo = new Data.GossipAdvertiseInfo(intTcpEndpoint, intSecTcpEndpoint, extTcpEndpoint,
-				extSecTcpEndpoint, intHttpEndpoint, extHttpEndpoint, internalIPToAdvertise, externalIPToAdvertise,
-				intHttpEndpoint.Port, extHttpEndpoint.Port);
+				extSecTcpEndpoint, extHttpEndpoint, externalIPToAdvertise, extHttpEndpoint.Port);
 
 			_builder.AdvertiseInternalIPAs(internalIPToAdvertise)
 				.AdvertiseExternalIPAs(externalIPToAdvertise)
@@ -574,7 +530,6 @@ namespace EventStore.Core.Tests.Common.VNodeBuilderTests.when_building {
 				.AdvertiseExternalTCPPortAs(extTcpEndpoint.Port)
 				.AdvertiseInternalSecureTCPPortAs(intSecTcpEndpoint.Port)
 				.AdvertiseExternalSecureTCPPortAs(extSecTcpEndpoint.Port)
-				.AdvertiseInternalHttpPortAs(intHttpEndpoint.Port)
 				.AdvertiseExternalHttpPortAs(extHttpEndpoint.Port);
 		}
 
@@ -584,12 +539,8 @@ namespace EventStore.Core.Tests.Common.VNodeBuilderTests.when_building {
 			Assert.AreEqual(_advertiseInfo.ExternalTcp, _settings.GossipAdvertiseInfo.ExternalTcp);
 			Assert.AreEqual(_advertiseInfo.InternalSecureTcp, _settings.GossipAdvertiseInfo.InternalSecureTcp);
 			Assert.AreEqual(_advertiseInfo.ExternalSecureTcp, _settings.GossipAdvertiseInfo.ExternalSecureTcp);
-			Assert.AreEqual(_advertiseInfo.InternalHttp, _settings.GossipAdvertiseInfo.InternalHttp);
 			Assert.AreEqual(_advertiseInfo.ExternalHttp, _settings.GossipAdvertiseInfo.ExternalHttp);
-			Assert.AreEqual(_advertiseInfo.AdvertiseInternalIPAs, _settings.GossipAdvertiseInfo.AdvertiseInternalIPAs);
 			Assert.AreEqual(_advertiseInfo.AdvertiseExternalIPAs, _settings.GossipAdvertiseInfo.AdvertiseExternalIPAs);
-			Assert.AreEqual(_advertiseInfo.AdvertiseInternalHttpPortAs,
-				_settings.GossipAdvertiseInfo.AdvertiseInternalHttpPortAs);
 			Assert.AreEqual(_advertiseInfo.AdvertiseExternalHttpPortAs,
 				_settings.GossipAdvertiseInfo.AdvertiseExternalHttpPortAs);
 		}

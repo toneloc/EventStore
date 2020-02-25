@@ -6,8 +6,7 @@ namespace EventStore.Core.Cluster {
 			return new VNodeInfo(member.InstanceId, 0,
 				member.InternalTcpEndPoint, member.InternalSecureTcpEndPoint,
 				member.ExternalTcpEndPoint, member.ExternalSecureTcpEndPoint,
-				member.InternalHttpEndPoint, member.ExternalHttpEndPoint,
-				member.IsReadOnlyReplica);
+				member.ExternalHttpEndPoint, member.IsReadOnlyReplica);
 		}
 	}
 }

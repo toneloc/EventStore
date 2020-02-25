@@ -27,7 +27,6 @@ namespace EventStore.Core.Tests.Common.VNodeBuilderTests.when_building {
 		public void should_have_default_endpoints() {
 			Assert.AreEqual(new IPEndPoint(IPAddress.Loopback, 1112), _settings.NodeInfo.InternalTcp);
 			Assert.AreEqual(new IPEndPoint(IPAddress.Loopback, 1113), _settings.NodeInfo.ExternalTcp);
-			Assert.AreEqual(new IPEndPoint(IPAddress.Loopback, 2112), _settings.NodeInfo.InternalHttp);
 			Assert.AreEqual(new IPEndPoint(IPAddress.Loopback, 2113), _settings.NodeInfo.ExternalHttp);
 		}
 
@@ -99,17 +98,14 @@ namespace EventStore.Core.Tests.Common.VNodeBuilderTests.when_building {
 		public void should_have_default_endpoints() {
 			var internalTcp = new IPEndPoint(IPAddress.Loopback, 1112);
 			var externalTcp = new IPEndPoint(IPAddress.Loopback, 1113);
-			var internalHttp = new IPEndPoint(IPAddress.Loopback, 2112);
 			var externalHttp = new IPEndPoint(IPAddress.Loopback, 2113);
 
 			Assert.AreEqual(internalTcp, _settings.NodeInfo.InternalTcp);
 			Assert.AreEqual(externalTcp, _settings.NodeInfo.ExternalTcp);
-			Assert.AreEqual(internalHttp, _settings.NodeInfo.InternalHttp);
 			Assert.AreEqual(externalHttp, _settings.NodeInfo.ExternalHttp);
 
 			Assert.AreEqual(internalTcp, _settings.GossipAdvertiseInfo.InternalTcp);
 			Assert.AreEqual(externalTcp, _settings.GossipAdvertiseInfo.ExternalTcp);
-			Assert.AreEqual(internalHttp, _settings.GossipAdvertiseInfo.InternalHttp);
 			Assert.AreEqual(externalHttp, _settings.GossipAdvertiseInfo.ExternalHttp);
 		}
 

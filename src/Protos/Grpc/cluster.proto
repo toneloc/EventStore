@@ -27,26 +27,26 @@ message GossipRequest {
 
 message ViewChangeRequest {
 	event_store.client.shared.UUID server_id = 1;
-	EndPoint server_internal_http = 2;
+	EndPoint server_external_http = 2;
 	int32 attempted_view = 3;
 }
 
 message ViewChangeProofRequest {
 	event_store.client.shared.UUID server_id = 1;
-	EndPoint server_internal_http = 2;
+	EndPoint server_external_http = 2;
 	int32 installed_view = 3;
 }
 
 message PrepareRequest {
 	event_store.client.shared.UUID server_id = 1;
-	EndPoint server_internal_http = 2;
+	EndPoint server_external_http = 2;
 	int32 view = 3;
 }
 
 message PrepareOkRequest {
 	int32 view = 1;
 	event_store.client.shared.UUID server_id = 2;
-	EndPoint server_internal_http = 3;
+	EndPoint server_external_http = 3;
 	int32 epoch_number = 4;
 	int64 epoch_position = 5;
 	event_store.client.shared.UUID epoch_id = 6;
@@ -58,9 +58,9 @@ message PrepareOkRequest {
 
 message ProposalRequest {
 	event_store.client.shared.UUID server_id = 1;
-	EndPoint server_internal_http = 2;
+	EndPoint server_external_http = 2;
 	event_store.client.shared.UUID leader_id = 3;
-	EndPoint leader_internal_http = 4;
+	EndPoint leader_external_http = 4;
 	int32 view = 5;
 	int32 epoch_number = 6;
 	int64 epoch_position = 7;
@@ -73,22 +73,22 @@ message ProposalRequest {
 
 message AcceptRequest {
 	event_store.client.shared.UUID server_id = 1;
-	EndPoint server_internal_http = 2;
+	EndPoint server_external_http = 2;
 	event_store.client.shared.UUID leader_id = 3;
-	EndPoint leader_internal_http = 4;
+	EndPoint leader_external_http = 4;
 	int32 view = 5;
 }
 
 message LeaderIsResigningRequest {
 	event_store.client.shared.UUID leader_id = 1;
-	EndPoint leader_internal_http = 2;
+	EndPoint leader_external_http = 2;
 }
 
 message LeaderIsResigningOkRequest {
 	event_store.client.shared.UUID leader_id = 1;
-	EndPoint leader_internal_http = 2;
+	EndPoint leader_external_http = 2;
 	event_store.client.shared.UUID server_id = 3;
-	EndPoint server_internal_http = 4;
+	EndPoint server_external_http = 4;
 }
 
 message ClusterInfo {
@@ -123,18 +123,17 @@ message MemberInfo {
 	VNodeState state = 3;
 	bool is_alive = 4;
 	EndPoint external_http = 5;
-	EndPoint internal_http = 6;
-	EndPoint internal_tcp = 7;
-	EndPoint external_tcp = 8;
+	EndPoint internal_tcp = 6;
+	EndPoint external_tcp = 7;
 	
-    int64 last_commit_position = 9;
-    int64 writer_checkpoint = 10;
-	int64 chaser_checkpoint = 11;
-    int64 epoch_position = 12;
-    int32 epoch_number = 13;
-    event_store.client.shared.UUID epoch_id = 14;
+    int64 last_commit_position = 8;
+    int64 writer_checkpoint = 9;
+	int64 chaser_checkpoint = 10;
+    int64 epoch_position = 11;
+    int32 epoch_number = 12;
+    event_store.client.shared.UUID epoch_id = 13;
 
-    int32 node_priority = 15;
-    bool is_read_only_replica = 16;
+    int32 node_priority = 14;
+    bool is_read_only_replica = 15;
 }
 

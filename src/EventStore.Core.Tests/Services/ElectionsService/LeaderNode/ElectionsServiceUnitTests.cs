@@ -38,9 +38,9 @@ namespace EventStore.Core.Tests.Services.ElectionsService {
 				seeds.Add(endPoint);
 				var instanceId = Guid.Parse($"101EFD13-F9CD-49BE-9C6D-E6AF9AF5540{i}");
 				members.Add(MemberInfo.ForVNode(instanceId, DateTime.UtcNow, VNodeState.Unknown, true,
-					endPoint, null, endPoint, null, endPoint, endPoint, -1, 0, 0, -1, -1, Guid.Empty, 0, false)
+					endPoint, null, endPoint, null, endPoint, -1, 0, 0, -1, -1, Guid.Empty, 0, false)
 				);
-				var nodeInfo = new VNodeInfo(instanceId, 0, endPoint, endPoint, endPoint, endPoint, endPoint,
+				var nodeInfo = new VNodeInfo(instanceId, 0, endPoint, endPoint, endPoint, endPoint,
 					endPoint, false);
 				_fakeTimeProvider = new FakeTimeProvider();
 				_scheduler = new FakeScheduler(new FakeTimer(), _fakeTimeProvider);
@@ -311,7 +311,7 @@ namespace EventStore.Core.Tests.Services.ElectionsService {
 		static VNodeInfo FromMember(int index, MemberInfo[] members) {
 			return new VNodeInfo(members[index].InstanceId, 1, members[index].InternalTcpEndPoint,
 				members[index].InternalSecureTcpEndPoint, members[index].ExternalTcpEndPoint,
-				members[index].ExternalSecureTcpEndPoint, members[index].InternalHttpEndPoint,
+				members[index].ExternalSecureTcpEndPoint,
 				members[index].ExternalHttpEndPoint, false);
 		}
 
@@ -321,7 +321,7 @@ namespace EventStore.Core.Tests.Services.ElectionsService {
 			Func<int, int> nodePriority) {
 			var id = IdForNode(i);
 			var ep = EndpointForNode(i);
-			return MemberInfo.ForVNode(id, DateTime.Now, VNodeState.Follower, true, ep, ep, ep, ep, ep, ep,
+			return MemberInfo.ForVNode(id, DateTime.Now, VNodeState.Follower, true, ep, ep, ep, ep, ep,
 				lastCommitPosition(i), writerCheckpoint(i), chaserCheckpoint(i), 1, 1, epochId, nodePriority(i), false);
 		}
 

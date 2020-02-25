@@ -36,9 +36,6 @@ namespace EventStore.ClusterNode {
 		[ArgDescription(Opts.ExternalIpDescr, Opts.InterfacesGroup)]
 		public IPAddress ExtIp { get; set; }
 
-		[ArgDescription(Opts.InternalHttpPortDescr, Opts.InterfacesGroup)]
-		public int IntHttpPort { get; set; }
-
 		[ArgDescription(Opts.ExternalHttpPortDescr, Opts.InterfacesGroup)]
 		public int ExtHttpPort { get; set; }
 
@@ -77,9 +74,6 @@ namespace EventStore.ClusterNode {
 
 		[ArgDescription(Opts.InternalTcpPortAdvertiseAsDescr, Opts.InterfacesGroup)]
 		public int IntTcpPortAdvertiseAs { get; set; }
-
-		[ArgDescription(Opts.InternalHttpPortAdvertiseAsDescr, Opts.InterfacesGroup)]
-		public int IntHttpPortAdvertiseAs { get; set; }
 
 		[ArgDescription(Opts.IntTcpHeartbeatTimeoutDescr, Opts.InterfacesGroup)]
 		public int IntTcpHeartbeatTimeout { get; set; }
@@ -330,7 +324,6 @@ namespace EventStore.ClusterNode {
 
 			IntIp = Opts.InternalIpDefault;
 			ExtIp = Opts.ExternalIpDefault;
-			IntHttpPort = Opts.InternalHttpPortDefault;
 			ExtHttpPort = Opts.ExternalHttpPortDefault;
 			EnableExternalTCP = Opts.EnableExternalTCPDefault;
 			IntTcpPort = Opts.InternalTcpPortDefault;
@@ -387,7 +380,6 @@ namespace EventStore.ClusterNode {
 
 			IntIpAdvertiseAs = Opts.InternalIpAdvertiseAsDefault;
 			IntTcpPortAdvertiseAs = Opts.InternalTcpPortAdvertiseAsDefault;
-			IntHttpPortAdvertiseAs = Opts.InternalHttpPortAdvertiseAsDefault;
 			IntSecureTcpPortAdvertiseAs = Opts.InternalSecureTcpPortAdvertiseAsDefault;
 
 			CertificateStoreLocation = Opts.CertificateStoreLocationDefault;

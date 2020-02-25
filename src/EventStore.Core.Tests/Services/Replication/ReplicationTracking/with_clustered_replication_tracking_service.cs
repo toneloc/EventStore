@@ -48,7 +48,7 @@ namespace EventStore.Core.Tests.Services.Replication.ReplicationTracking {
 			var leaderIpEndPoint = new IPEndPoint(IPAddress.Loopback, 2113);
 			Service.Handle(new SystemMessage.BecomeFollower(Guid.NewGuid(), new VNodeInfo(Guid.NewGuid(), 1,
 				leaderIpEndPoint, leaderIpEndPoint, leaderIpEndPoint,
-				leaderIpEndPoint, leaderIpEndPoint, leaderIpEndPoint, false)));
+				leaderIpEndPoint, leaderIpEndPoint, false)));
 		}
 
 		public void Handle(ReplicationTrackingMessage.ReplicatedTo message) {

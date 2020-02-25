@@ -149,7 +149,6 @@ namespace EventStore.ClusterNode {
 		private static ClusterVNode BuildNode(ClusterNodeOptions options) {
 			var quorumSize = GetQuorumSize(options.ClusterSize);
 
-			var intHttp = new IPEndPoint(options.IntIp, options.IntHttpPort);
 			var extHttp = new IPEndPoint(options.ExtIp, options.ExtHttpPort);
 			var intTcp = new IPEndPoint(options.IntIp, options.IntTcpPort);
 			var intSecTcp = options.IntSecureTcpPort > 0
@@ -213,7 +212,6 @@ namespace EventStore.ClusterNode {
 				.WithInternalSecureTcpOn(intSecTcp)
 				.WithExternalTcpOn(extTcp)
 				.WithExternalSecureTcpOn(extSecTcp)
-				.WithInternalHttpOn(intHttp)
 				.WithExternalHttpOn(extHttp)
 				.WithWorkerThreads(options.WorkerThreads)
 				.WithInternalHeartbeatTimeout(TimeSpan.FromMilliseconds(options.IntTcpHeartbeatTimeout))
@@ -245,7 +243,6 @@ namespace EventStore.ClusterNode {
 				.WithTfChunksCacheSize(options.ChunksCacheSize)
 				.AdvertiseInternalIPAs(options.IntIpAdvertiseAs)
 				.AdvertiseExternalIPAs(options.ExtIpAdvertiseAs)
-				.AdvertiseInternalHttpPortAs(options.IntHttpPortAdvertiseAs)
 				.AdvertiseExternalHttpPortAs(options.ExtHttpPortAdvertiseAs)
 				.AdvertiseInternalTCPPortAs(options.IntTcpPortAdvertiseAs)
 				.AdvertiseExternalTCPPortAs(options.ExtTcpPortAdvertiseAs)

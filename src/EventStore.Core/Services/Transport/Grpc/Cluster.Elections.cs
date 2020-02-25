@@ -19,7 +19,7 @@ namespace EventStore.Core.Services.Transport.Grpc {
 		public override Task<Empty> ViewChange(ViewChangeRequest request, ServerCallContext context) {
 			_bus.Publish(new ElectionMessage.ViewChange(
 				Uuid.FromDto(request.ServerId).ToGuid(),
-				new IPEndPoint(IPAddress.Parse(request.ServerInternalHttp.Address), (int)request.ServerInternalHttp.Port),
+				new IPEndPoint(IPAddress.Parse(request.ServerExternalHttp.Address), (int)request.ServerExternalHttp.Port),
 				request.AttemptedView));
 			return EmptyResult;
 		}
@@ -27,7 +27,7 @@ namespace EventStore.Core.Services.Transport.Grpc {
 		public override Task<Empty> ViewChangeProof(ViewChangeProofRequest request, ServerCallContext context) {
 			_bus.Publish(new ElectionMessage.ViewChangeProof(
 				Uuid.FromDto(request.ServerId).ToGuid(),
-				new IPEndPoint(IPAddress.Parse(request.ServerInternalHttp.Address), (int)request.ServerInternalHttp.Port),
+				new IPEndPoint(IPAddress.Parse(request.ServerExternalHttp.Address), (int)request.ServerExternalHttp.Port),
 				request.InstalledView));
 			return EmptyResult;
 		}
@@ -35,7 +35,7 @@ namespace EventStore.Core.Services.Transport.Grpc {
 		public override Task<Empty> Prepare(PrepareRequest request, ServerCallContext context) {
 			_bus.Publish(new ElectionMessage.Prepare(
 				Uuid.FromDto(request.ServerId).ToGuid(),
-				new IPEndPoint(IPAddress.Parse(request.ServerInternalHttp.Address), (int)request.ServerInternalHttp.Port),
+				new IPEndPoint(IPAddress.Parse(request.ServerExternalHttp.Address), (int)request.ServerExternalHttp.Port),
 				request.View));
 			return EmptyResult;
 		}
@@ -44,7 +44,7 @@ namespace EventStore.Core.Services.Transport.Grpc {
 			_bus.Publish(new ElectionMessage.PrepareOk(
 				request.View,
 				Uuid.FromDto(request.ServerId).ToGuid(),
-				new IPEndPoint(IPAddress.Parse(request.ServerInternalHttp.Address), (int)request.ServerInternalHttp.Port),
+				new IPEndPoint(IPAddress.Parse(request.ServerExternalHttp.Address), (int)request.ServerExternalHttp.Port),
 				request.EpochNumber,
 				request.EpochPosition,
 				Uuid.FromDto(request.EpochId).ToGuid(),
@@ -58,9 +58,9 @@ namespace EventStore.Core.Services.Transport.Grpc {
 		public override Task<Empty> Proposal(ProposalRequest request, ServerCallContext context) {
 			_bus.Publish(new ElectionMessage.Proposal(
 				Uuid.FromDto(request.ServerId).ToGuid(),
-				new IPEndPoint(IPAddress.Parse(request.ServerInternalHttp.Address), (int)request.ServerInternalHttp.Port),
+				new IPEndPoint(IPAddress.Parse(request.ServerExternalHttp.Address), (int)request.ServerExternalHttp.Port),
 				Uuid.FromDto(request.LeaderId).ToGuid(),
-				new IPEndPoint(IPAddress.Parse(request.LeaderInternalHttp.Address), (int)request.LeaderInternalHttp.Port),
+				new IPEndPoint(IPAddress.Parse(request.LeaderExternalHttp.Address), (int)request.LeaderExternalHttp.Port),
 				request.View,
 				request.EpochNumber,
 				request.EpochPosition,
@@ -75,11 +75,11 @@ namespace EventStore.Core.Services.Transport.Grpc {
 		public override Task<Empty> Accept(AcceptRequest request, ServerCallContext context) {
 			_bus.Publish(new ElectionMessage.Accept(
 				Uuid.FromDto(request.ServerId).ToGuid(),
-				new IPEndPoint(IPAddress.Parse(request.ServerInternalHttp.Address),
-					(int)request.ServerInternalHttp.Port),
+				new IPEndPoint(IPAddress.Parse(request.ServerExternalHttp.Address),
+					(int)request.ServerExternalHttp.Port),
 				Uuid.FromDto(request.LeaderId).ToGuid(),
-				new IPEndPoint(IPAddress.Parse(request.LeaderInternalHttp.Address),
-					(int)request.LeaderInternalHttp.Port),
+				new IPEndPoint(IPAddress.Parse(request.LeaderExternalHttp.Address),
+					(int)request.LeaderExternalHttp.Port),
 				request.View));
 			return EmptyResult;
 		}
@@ -87,19 +87,19 @@ namespace EventStore.Core.Services.Transport.Grpc {
 		public override Task<Empty> LeaderIsResigning(LeaderIsResigningRequest request, ServerCallContext context) {
 			_bus.Publish(new ElectionMessage.LeaderIsResigning(
 				Uuid.FromDto(request.LeaderId).ToGuid(),
-				new IPEndPoint(IPAddress.Parse(request.LeaderInternalHttp.Address),
-					(int)request.LeaderInternalHttp.Port)));
+				new IPEndPoint(IPAddress.Parse(request.LeaderExternalHttp.Address),
+					(int)request.LeaderExternalHttp.Port)));
 			return EmptyResult;
 		}
 		
 		public override Task<Empty> LeaderIsResigningOk(LeaderIsResigningOkRequest request, ServerCallContext context) {
 			_bus.Publish(new ElectionMessage.LeaderIsResigningOk(
 				Uuid.FromDto(request.LeaderId).ToGuid(),
-				new IPEndPoint(IPAddress.Parse(request.LeaderInternalHttp.Address),
-					(int)request.LeaderInternalHttp.Port),
+				new IPEndPoint(IPAddress.Parse(request.LeaderExternalHttp.Address),
+					(int)request.LeaderExternalHttp.Port),
 				Uuid.FromDto(request.ServerId).ToGuid(),
-				new IPEndPoint(IPAddress.Parse(request.ServerInternalHttp.Address),
-					(int)request.ServerInternalHttp.Port)));
+				new IPEndPoint(IPAddress.Parse(request.ServerExternalHttp.Address),
+					(int)request.ServerExternalHttp.Port)));
 			return EmptyResult;
 		}
 	}
