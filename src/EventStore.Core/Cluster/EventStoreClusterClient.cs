@@ -18,17 +18,26 @@ namespace EventStore.Core.Cluster {
 		private readonly IPublisher _bus;
 		internal bool Disposed { get; private set; }
 
-		public EventStoreClusterClient(Uri address, IPublisher bus,
+		public EventStoreClusterClient(Uri address, IPublisher bus, X509Certificate clientCertificate,
 			Func<HttpMessageHandler> httpMessageHandlerFactory = null) {
 
-			HttpMessageHandler httpMessageHandler = httpMessageHandlerFactory?.Invoke() ?? new HttpClientHandler {
-				ServerCertificateCustomValidationCallback = (message, certificate, chain, errors) => {
-					if (errors != SslPolicyErrors.None) {
-						Log.Error("Certificate validation failed for certificate: {certificate} due to reason {reason}.", certificate, errors);
+			HttpMessageHandler httpMessageHandler = httpMessageHandlerFactory?.Invoke();
+
+			if (httpMessageHandler == null) {
+				httpMessageHandler = new HttpClientHandler {
+					ServerCertificateCustomValidationCallback = (message, certificate, chain, errors) => {
+						if (errors != SslPolicyErrors.None) {
+							Log.Error(
+								"Certificate validation failed for certificate: {certificate} due to reason {reason}.",
+								certificate, errors);
+						}
+
+						return errors == SslPolicyErrors.None;
 					}
-					return errors == SslPolicyErrors.None;
-				}
-			};
+				};
+				if(clientCertificate != null)
+					((HttpClientHandler)httpMessageHandler).ClientCertificates.Add(clientCertificate);
+			}
 
 			_channel = GrpcChannel.ForAddress(address, new GrpcChannelOptions {
 				HttpClient = new HttpClient(httpMessageHandler) {
