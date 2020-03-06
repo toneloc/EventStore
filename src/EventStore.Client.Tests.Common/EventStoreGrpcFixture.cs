@@ -89,18 +89,26 @@ namespace EventStore.Client {
 
 		public virtual async Task InitializeAsync() {
 			await Node.StartAsync(true);
-			var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-			var envelope  = new CallbackEnvelope(m => {
-				if (m is UserManagementMessage.ResponseMessage rm) {
-					if (rm.Success) tcs.TrySetResult(true);
-					else tcs.TrySetException(new Exception($"Create user failed {rm.Error}"));
-				} else {
-					tcs.TrySetException(new Exception($"Wrong expected message type {m.GetType().FullName}"));
+			for (int i = 0; i <= 10; i++) {
+				var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+				var envelope = new CallbackEnvelope(m => {
+					if (m is UserManagementMessage.ResponseMessage rm) {
+						if (rm.Success) tcs.TrySetResult(true);
+						else tcs.TrySetException(new Exception($"Create user failed {rm.Error}"));
+					} else {
+						tcs.TrySetException(new Exception($"Wrong expected message type {m.GetType().FullName}"));
+					}
+				});
+				Node.MainQueue.Publish(new UserManagementMessage.Create(envelope, SystemAccounts.System,
+					TestCredentials.TestUser1.Username, "test", Array.Empty<string>(),
+					TestCredentials.TestUser1.Password));
+				try {
+					await tcs.Task;
+				} catch when (i < 10) {
+					//Try again
+					await Task.Delay(100);
 				}
-			});
-			Node.MainQueue.Publish(new UserManagementMessage.Create(envelope, SystemAccounts.System, TestCredentials.TestUser1.Username, "test", Array.Empty<string>(), TestCredentials.TestUser1.Password));
-			await tcs.Task;
-			
+			}
 			await Given().WithTimeout(TimeSpan.FromMinutes(5));
 			await When().WithTimeout(TimeSpan.FromMinutes(5));
 		}
@@ -181,10 +189,7 @@ namespace EventStore.Client {
 			public IServiceProvider ConfigureServices(IServiceCollection services) =>
 				_node.Startup.ConfigureServices(services);
 
-			public void Configure(IApplicationBuilder app) => _node.Startup.Configure(app.Use(CompleteResponse));
-
-			private static RequestDelegate CompleteResponse(RequestDelegate next) => context =>
-				next(context).ContinueWith(_ => context.Response.Body.FlushAsync());
+			public void Configure(IApplicationBuilder app) => _node.Startup.Configure(app);
 		}
 	}
 }

@@ -18,20 +18,20 @@
 				<Platforms>x64</Platforms>
 		</PropertyGroup>
 		<ItemGroup>
-				<PackageReference Include="Google.Protobuf" Version="3.11.3"/>
-				<PackageReference Include="Grpc.Net.Client" Version="2.27.0"/>
+				<PackageReference Include="Google.Protobuf" Version="3.11.4" />
+				<PackageReference Include="Grpc.Net.Client" Version="2.27.0" />
 				<PackageReference Include="Grpc.Tools" Version="2.27.0">
 						<PrivateAssets>all</PrivateAssets>
 						<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 				</PackageReference>
 		</ItemGroup>
 		<ItemGroup>
-				<Protobuf Include="../Protos/Grpc/operations.proto" Access="internal" GrpcServices="Client" ProtoRoot="../Protos/Grpc"/>
-				<Compile Include="../EventStore.Client.Common/Interceptors/*.cs"/>
-				<Compile Include="../EventStore.Client.Common/Constants.cs"/>
-				<Compile Include="../EventStore.Client.Common/MetadataExtensions.cs"/>
+				<Protobuf Include="../Protos/Grpc/operations.proto" Access="internal" GrpcServices="Client" ProtoRoot="../Protos/Grpc" />
+				<Compile Include="../EventStore.Client.Common/Interceptors/*.cs" />
+				<Compile Include="../EventStore.Client.Common/Constants.cs" />
+				<Compile Include="../EventStore.Client.Common/MetadataExtensions.cs" />
 		</ItemGroup>
 		<ItemGroup>
-				<ProjectReference Include="..\EventStore.Client\EventStore.Client.csproj"/>
+				<ProjectReference Include="..\EventStore.Client\EventStore.Client.csproj" />
 		</ItemGroup>
 </Project>
