@@ -63,12 +63,30 @@ jobs:
       platform: "Windows"
       testRunner: VSTest
       testResultsFiles: '**/*.trx'
+  - task: CopyFiles@2
+    displayName: "Prepare Client Artifact Directory"
+    condition: eq(variables['System.PullRequest.IsFork'], 'False')
+    inputs:
+      contents: '$(Build.SourcesDirectory)/bin/**/netstandard2.0/**'
+      cleanTargetFolder: true
+      overWrite: true
+      flattenFolders: true
+      targetFolder: '$(Build.ArtifactStagingDirectory)/Client'
+  - task: CopyFiles@2
+    displayName: "Prepare Server Artifact Directory"
+    condition: eq(variables['System.PullRequest.IsFork'], 'False')
+    inputs:
+      contents: '$(Build.SourcesDirectory)/bin/**/netcoreapp3.0/**'
+      cleanTargetFolder: true
+      overWrite: true
+      flattenFolders: true
+      targetFolder: '$(Build.ArtifactStagingDirectory)/Server'
   - task: PublishBuildArtifacts@1
     condition: eq(variables['System.PullRequest.IsFork'], 'False')
     displayName: Publish Artifacts
     inputs:
       artifactName: windows-netcoreapp3-$(Configuration)
-      pathToPublish: '$(Build.SourcesDirectory)\bin\'
+      pathToPublish: '$(Build.ArtifactStagingDirectory)'
 
 - job: ubuntu_x64
   strategy:
@@ -102,9 +120,28 @@ jobs:
       platform: "Ubuntu 16.04"
       testRunner: VSTest
       testResultsFiles: '**/*.trx'
+  - task: CopyFiles@2
+    displayName: "Prepare Client Artifact Directory"
+    condition: eq(variables['System.PullRequest.IsFork'], 'False')
+    inputs:
+      contents: '$(Build.SourcesDirectory)/bin/**/netstandard2.0/**'
+      cleanTargetFolder: true
+      overWrite: true
+      flattenFolders: true
+      targetFolder: '$(Build.ArtifactStagingDirectory)/Client'
+  - task: CopyFiles@2
+    displayName: "Prepare Server Artifact Directory"
+    condition: eq(variables['System.PullRequest.IsFork'], 'False')
+    inputs:
+      contents: '$(Build.SourcesDirectory)/bin/**/netcoreapp3.0/**'
+      cleanTargetFolder: true
+      overWrite: true
+      flattenFolders: true
+      targetFolder: '$(Build.ArtifactStagingDirectory)/Server'
   - task: PublishBuildArtifacts@1
     condition: eq(variables['System.PullRequest.IsFork'], 'False')
     displayName: Publish Artifacts
     inputs:
       artifactName: ubuntu1604-netcoreapp3-$(Configuration)
-      pathToPublish: '$(Build.SourcesDirectory)/bin/'
+      pathToPublish: $(Build.ArtifactStagingDirectory)
+
