@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Security;
+using System.Net.Sockets;
 using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,8 +21,10 @@ using EventStore.Core.TransactionLog.Chunks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Display;
@@ -33,9 +39,10 @@ namespace EventStore.Client {
 		private readonly TFChunkDb _db;
 		private readonly IList<IDisposable> _disposables;
 
-		protected TestServer TestServer { get; }
 		public ClusterVNode Node { get; }
 		public EventStoreClient Client { get; }
+		private readonly IWebHost _host;
+		protected readonly Uri _serverUri;
 
 		static EventStoreGrpcFixture() {
 			var loggerConfiguration = new LoggerConfiguration()
@@ -64,15 +71,43 @@ namespace EventStore.Client {
 			Node = vNodeBuilder.Build();
 			_db = vNodeBuilder.GetDb();
 			_disposables = new List<IDisposable>();
-			TestServer = new TestServer(webHostBuilder.UseSerilog().UseStartup(new TestClusterVNodeStartup(Node)));
+
+			using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			socket.Bind(new IPEndPoint(IPAddress.Loopback, 0));
+			var port = ((IPEndPoint)socket.LocalEndPoint).Port;
+
+			_host = webHostBuilder
+				.UseKestrel(serverOptions => {
+					serverOptions.Listen(IPAddress.Loopback, port, listenOptions => {
+						if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+							listenOptions.Protocols = HttpProtocols.Http2;
+						} else {
+							listenOptions.UseHttps();
+						}
+					});
+				})
+				.UseSerilog()
+				.UseStartup(Node.Startup)
+				.Build();
 
 			var settings = clientSettings ?? new EventStoreClientSettings {
-				CreateHttpMessageHandler = () => new ResponseVersionHandler {
-					InnerHandler = TestServer.CreateHandler()
+				OperationOptions = { TimeoutAfter = Debugger.IsAttached ? null : (TimeSpan?)TimeSpan.FromSeconds(30) },
+				ConnectivitySettings = new EventStoreClientConnectivitySettings {
+					Address = new UriBuilder {
+						Port = port,
+						Scheme = RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
+							? Uri.UriSchemeHttp
+							: Uri.UriSchemeHttps
+					}.Uri,
 				},
-				OperationOptions = { TimeoutAfter = Debugger.IsAttached ? null : (TimeSpan?)TimeSpan.FromSeconds(30) }
+				CreateHttpMessageHandler = () => new SocketsHttpHandler {
+					SslOptions = new SslClientAuthenticationOptions {
+						RemoteCertificateValidationCallback = delegate { return true; }
+					}
+				},
+				LoggerFactory = _host.Services.GetRequiredService<ILoggerFactory>()
 			};
-
+			_serverUri = settings.ConnectivitySettings.Address;
 			Client = new EventStoreClient(settings);
 		}
 
@@ -88,7 +123,9 @@ namespace EventStore.Client {
 			=> new EventData(Uuid.NewUuid(), type, Encoding.UTF8.GetBytes($@"{{""x"":{index}}}"));
 
 		public virtual async Task InitializeAsync() {
+			await _host.StartAsync();
 			await Node.StartAsync(true);
+
 			var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 			var envelope  = new CallbackEnvelope(m => {
 				if (m is UserManagementMessage.ResponseMessage rm) {
@@ -108,7 +145,8 @@ namespace EventStore.Client {
 		public virtual async Task DisposeAsync() {
 			await Node.StopAsync();
 			_db.Dispose();
-			TestServer.Dispose();
+			await _host.StopAsync();
+			_host.Dispose();
 			Client?.Dispose();
 			foreach (var disposable in _disposables) {
 				disposable.Dispose();
